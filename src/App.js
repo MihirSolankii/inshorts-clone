@@ -1,23 +1,46 @@
 import logo from './logo.svg';
 import './App.css';
+import NavInshorts from './Components/Navbar/NavInshorts';
+import { useEffect, useState } from 'react';
+import category from './Components/Category';
+import NewsContent from './Components/NewsComponent/NewsContent';
+import axios from "axios";
 
 function App() {
+  const [Catrogry,setCateogry]=useState("");
+  const[newsArray,setNewsArray]=useState([])
+  const [newsData, setNewsData] = useState();
+  const[loadmore,setloadmore]=useState(20);
+const newsApi=async()=>{
+  try {
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const news=await axios.get(`${proxyUrl}https://newsapi.org/v2/top-headlines?country=us&apiKey=c529e234979d47948630ba767607e387&category=${Catrogry}&pageSize=${loadmore}`)
+   
+    setNewsArray(news.data.articles);
+    setNewsData(news.data.totalResults);
+   
+  
+ 
+    
+    
+    
+  } catch (error) {
+    
+  }
+}
+console.log(newsArray);
+console.log(newsData);
+
+
+useEffect(() => {
+  newsApi(); // Fetch news when category changes
+}, [Catrogry,loadmore]);
+ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    
+    <div className="">
+      <NavInshorts setCateogry={setCateogry}/>
+      <NewsContent newsArray={newsArray} newsData={newsData} loadmore={loadmore}setloadmore={setloadmore}/>
     </div>
   );
 }
